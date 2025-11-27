@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Menú - Kafeehaus</title>
+<script src="/static/config.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    :root {
+        --cafe-oscuro: #4A2C2A;
+        --cafe-medio: #8B5A3C;
+        --cafe-claro: #D4B896;
+        --beige: #F5E6D3;
+        --oro: #C9A96E;
+        --verde: #27AE60;
+        --rojo: #E74C3C;
+    }
+    
+    body { 
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+        background: linear-gradient(135deg, #f8f9fa 0%, var(--beige) 100%);
+        padding-top: 80px; 
+        color: #2C3E50;
+        min-height: 100vh;
+    }
+
+    /* Navbar Mejorada */
+    .navbar {
+        background: linear-gradient(135deg, var(--cafe-oscuro) 0%, #5a382c 100%) !important;
+        box-shadow: 0 4px 20px rgba(74, 44, 42, 0.3);
+        padding: 1rem 0;
+    }
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: white !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .navbar-brand i {
+        color: var(--oro);
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .user-info {
+        color: white;
+        margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+    }
+
+    .user-info i {
+        color: var(--oro);
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--oro), #d4b896);
+        border: none;
+        color: var(--cafe-oscuro);
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(201, 169, 110, 0.3);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(201, 169, 110, 0.4);
+    }
+
+    .btn-outline-light {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-weight: 500;
+        padding: 0.5rem 1.5rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        transform: translateY(-1px);
+    }
+
+    .cart-count {
+        background: var(--rojo);
+        color: white;
+        border-radius: 50%;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 0.3rem;
+    }
+
+    /* Encabezados de Sección */
+    .category-section {
+        margin-bottom: 4rem;
+        position: relative;
+    }
+
+    .category-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--cafe-oscuro);
+        position: relative;
+        font-weight: 300;
+        font-size: 2.5rem;
+    }
+
+    .category-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--oro), transparent);
+    }
+
+    /* Tablas Mejoradas */
+    .product-table { 
+        width: 95%; 
+        margin: 0 auto 3rem auto; 
+        border-collapse: separate; 
+        border-spacing: 0; 
+        border-radius: 20px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 
+            0 10px 30px rgba(0,0,0,0.08),
+            0 0 0 1px rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+
+    .product-table th { 
+        background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-medio));
+        color: white;
+        font-weight: 600; 
+        text-transform: uppercase; 
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        padding: 1.2rem 1.5rem;
+        border: none;
+    }
+
+    .product-table td { 
+        padding: 1.2rem 1.5rem; 
+        text-align: left; 
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .product-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .product-table tr:hover td { 
+        background: linear-gradient(135deg, #fff9f0, var(--beige));
+        transform: translateX(5px);
+        cursor: pointer;
+    }
+
+    .product-table tr:nth-child(even) td { 
+        background: #fafafa; 
+    }
+
+    /* Estados de Disponibilidad */
+    .availability-available {
+        color: var(--verde);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .availability-unavailable {
+        color: var(--rojo);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Loading State */
+    .loading {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--cafe-medio);
+    }
+
+    .loading h3 {
+        font-weight: 300;
+        margin-bottom: 1rem;
+    }
+
+    /* Footer Mejorado */
+    footer {
+        background: linear-gradient(135deg, var(--cafe-oscuro) 0%, #5a382c 100%);
+        color: white;
+        text-align: center;
+        padding: 2.5rem 0;
+        margin-top: 5rem;
+        position: relative;
+    }
+
+    footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--oro), transparent);
+    }
+
+    footer p {
+        margin: 0;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    /* Modal Mejorado */
+    .modal-content {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-medio));
+        color: white;
+        border: none;
+        padding: 1.5rem 2rem;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--verde), #2ecc71);
+        border: none;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    }
+
+    /* Precios */
+    .price {
+        color: var(--cafe-oscuro);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .category-section {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .category-section:nth-child(odd) {
+        animation-delay: 0.1s;
+    }
+
+    .category-section:nth-child(even) {
+        animation-delay: 0.2s;
+    }
+</style>
+</head>
+<body>
+
+<!-- Navbar Mejorada -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+        <i class="fas fa-mug-hot"></i>Kafeehaus
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <div class="user-info">
+            <i class="fas fa-user"></i>
+            <span id="userName">Usuario</span>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/carrito">
+            <i class="fas fa-shopping-cart"></i>Carrito <span id="cartCount" class="cart-count">0</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-warning ms-3" onclick="irAPago()">
+            <i class="fas fa-credit-card"></i>Pagar
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-outline-light ms-2" onclick="cerrarSesion()">
+            <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Contenedor de productos dinámicos -->
+<div id="productosContainer">
+  <div class="loading">
+    <h3><i class="fas fa-coffee fa-spin"></i> Cargando menú...</h3>
+    <p>Preparando los mejores productos para ti</p>
+  </div>
+</div>
+
+<!-- Modal Detalle Producto -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle"><i class="fas fa-coffee"></i> Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body d-flex flex-column flex-md-row align-items-center gap-4 p-4">
+        <img id="modalImage" src="" alt="Producto" class="img-fluid rounded-3 shadow" style="max-width:400px; height:250px; object-fit:cover;">
+        <div class="flex-grow-1">
+          <p id="modalDesc" class="text-muted mb-3"></p>
+          <h4 id="modalPrice" class="text-primary mb-4"></h4>
+          <div class="d-flex align-items-center gap-2 mb-4">
+            <label for="quantity" class="mb-0 fw-bold">Cantidad:</label>
+            <input type="number" id="quantity" class="form-control" value="1" min="1" style="width:100px;">
+          </div>
+          <button onclick="agregarAlCarrito()" class="btn btn-success btn-lg w-100">
+            <i class="fas fa-cart-plus me-2"></i>Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Mejorado -->
+<footer>
+  <p>© 2025 Kafeehaus. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Variables globales
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let currentProduct = {};
+let allProducts = [];
+
+// Verificación MEJORADA de autenticación
+function verificarAutenticacion() {
+    try {
+        const userDataStr = localStorage.getItem('userData');
+        console.log('🔍 Verificando autenticación en menú...', userDataStr);
+        
+        if (!userDataStr) {
+            console.log('❌ No hay userData en localStorage');
+            alert('Debes iniciar sesión para acceder al menú');
+            window.location.href = '/iniciarsesion';
+            return null;
+        }
+        
+        const userData = JSON.parse(userDataStr);
+        console.log('👤 Datos de usuario en menú:', userData);
+        
+        // Verificar que tenga los campos esenciales
+        if (!userData.email || !userData.rol || !userData.nombre) {
+            console.log('❌ Datos de usuario incompletos en menú');
+            localStorage.removeItem('userData');
+            alert('Sesión inválida. Por favor inicia sesión nuevamente.');
+            window.location.href = '/iniciarsesion';
+            return null;
+        }
+        
+        document.getElementById('userName').textContent = userData.nombre;
+        return userData;
+        
+    } catch (error) {
+        console.error('❌ Error verificando autenticación en menú:', error);
+        localStorage.removeItem('userData');
+        alert('Error de sesión. Por favor inicia sesión nuevamente.');
+        window.location.href = '/iniciarsesion';
+        return null;
+    }
+}
+
+// Actualizar contador del carrito
+function updateCartCount() {
+    const count = cart.reduce((acc, item) => acc + item.quantity, 0);
+    document.getElementById('cartCount').textContent = count;
+}
+
+// Cerrar sesión - VERSIÓN MEJORADA
+function cerrarSesion() {
+    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        console.log('🚪 Cerrando sesión...');
+        // Limpiar TODOS los datos de sesión
+        localStorage.removeItem('userData');
+        localStorage.removeItem('cart');
+        // Forzar recarga para limpiar cualquier estado en memoria
+        setTimeout(() => {
+            window.location.href = '/iniciarsesion';
+        }, 100);
+    }
+}
+
+// Cargar productos desde la API
+async function cargarProductos() {
+    try {
+        console.log('📦 Cargando productos desde API...');
+        const response = await fetch('/api/productos');
+        if (!response.ok) {
+            throw new Error('Error al cargar productos');
+        }
+        
+        allProducts = await response.json();
+        console.log(`✅ ${allProducts.length} productos cargados`);
+        mostrarProductosPorCategoria();
+        
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+        document.getElementById('productosContainer').innerHTML = `
+            <div class="loading">
+                <h3><i class="fas fa-exclamation-triangle"></i> Error al cargar el menú</h3>
+                <p>Por favor, recarga la página</p>
+            </div>
+        `;
+    }
+}
+
+// Mostrar productos organizados por categoría
+function mostrarProductosPorCategoria() {
+    const container = document.getElementById('productosContainer');
+    
+    // Agrupar productos por categoría
+    const productosPorCategoria = {};
+    allProducts.forEach(producto => {
+        if (!productosPorCategoria[producto.categoria]) {
+            productosPorCategoria[producto.categoria] = [];
+        }
+        productosPorCategoria[producto.categoria].push(producto);
+    });
+    
+    let html = '';
+    
+    // Generar HTML para cada categoría
+    for (const [categoria, productos] of Object.entries(productosPorCategoria)) {
+        const categoriaNombre = obtenerNombreCategoria(categoria);
+        const categoriaIcono = obtenerIconoCategoria(categoria);
+        
+        html += `
+            <div class="category-section">
+                <h1 class="category-title">${categoriaIcono} ${categoriaNombre}</h1>
+                <table class="product-table">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Valor</th>
+                        <th>Disponibilidad</th>
+                    </tr>
+        `;
+        
+        productos.forEach(producto => {
+            const disponibilidad = producto.disponible ? 
+                '<span class="availability-available"><i class="fas fa-check-circle"></i> Disponible</span>' : 
+                '<span class="availability-unavailable"><i class="fas fa-times-circle"></i> No Disponible</span>';
+            
+            html += `
+                <tr onclick="abrirModal(
+                    '${producto.nombre.replace(/'/g, "\\'")}', 
+                    '$${producto.precio.toLocaleString()}', 
+                    '${producto.imagen_url}', 
+                    '${producto.descripcion.replace(/'/g, "\\'")}'
+                )">
+                    <td>${producto.nombre}</td>
+                    <td class="price">$${producto.precio.toLocaleString()}</td>
+                    <td>${disponibilidad}</td>
+                </tr>
+            `;
+        });
+        
+        html += `</table></div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+// Obtener nombre bonito para la categoría
+function obtenerNombreCategoria(categoria) {
+    const nombres = {
+        'bebida': 'Bebidas Calientes',
+        'bebida_fria': 'Bebidas Frías',
+        'comida': 'Comidas y Postres'
+    };
+    return nombres[categoria] || categoria;
+}
+
+// Obtener icono para la categoría
+function obtenerIconoCategoria(categoria) {
+    const iconos = {
+        'bebida': '<i class="fas fa-mug-hot"></i>',
+        'bebida_fria': '<i class="fas fa-glass-whiskey"></i>',
+        'comida': '<i class="fas fa-utensils"></i>'
+    };
+    return iconos[categoria] || '<i class="fas fa-box"></i>';
+}
+
+// Abrir modal del producto
+function abrirModal(nombre, precio, imagen, descripcion) {
+    currentProduct = {
+        name: nombre,
+        price: precio,
+        img: imagen,
+        desc: descripcion
+    };
+    
+    document.getElementById('modalTitle').innerHTML = `<i class="fas fa-coffee"></i> ${nombre}`;
+    document.getElementById('modalPrice').textContent = precio;
+    document.getElementById('modalImage').src = imagen;
+    document.getElementById('modalDesc').textContent = descripcion;
+    document.getElementById('quantity').value = 1;
+    
+    const modal = new bootstrap.Modal(document.getElementById('productModal'));
+    modal.show();
+}
+
+// Agregar producto al carrito
+function agregarAlCarrito() {
+    const qty = parseInt(document.getElementById('quantity').value);
+    
+    // Buscar si el producto ya está en el carrito
+    const existingIndex = cart.findIndex(item => item.name === currentProduct.name);
+    
+    if (existingIndex !== -1) {
+        cart[existingIndex].quantity += qty;
+    } else {
+        cart.push({
+            name: currentProduct.name,
+            price: currentProduct.price,
+            img: currentProduct.img,
+            quantity: qty
+        });
+    }
+    
+    // Guardar en localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Actualizar contador
+    updateCartCount();
+    
+    // Cerrar modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+    modal.hide();
+    
+    // Toast de confirmación mejorado
+    mostrarToast(`✅ ${currentProduct.name} agregado al carrito!`);
+}
+
+// Mostrar toast de confirmación
+function mostrarToast(mensaje) {
+    // Crear elemento toast
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 p-3';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <div class="toast show" role="alert">
+            <div class="toast-header" style="background: var(--verde); color: white;">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Éxito</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${mensaje}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Auto-eliminar después de 3 segundos
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Ir a la página de pago
+function irAPago() {
+    if (cart.length === 0) {
+        mostrarToast("🛒 Tu carrito está vacío");
+        return;
+    }
+    window.location.href = "/pago";
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando Menú...');
+    
+    // Verificar autenticación primero
+    const userData = verificarAutenticacion();
+    if (userData) {
+        console.log('✅ Usuario autenticado, cargando productos...');
+        updateCartCount();
+        cargarProductos();
+    }
+});
+</script>
+</body>
+</html>

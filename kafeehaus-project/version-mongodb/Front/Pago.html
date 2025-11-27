@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago - Kafeehaus</title>
+    <script src="/static/config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --cafe-oscuro: #4A2C2A;
+            --cafe-medio: #8B5A3C;
+            --cafe-claro: #D4B896;
+            --beige: #F5E6D3;
+            --oro: #C9A96E;
+            --verde: #27AE60;
+            --rojo: #E74C3C;
+            --azul: #3498DB;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, var(--beige) 100%);
+            padding-top: 80px;
+            color: #2C3E50;
+            min-height: 100vh;
+        }
+
+        /* Navbar Mejorada */
+        .navbar {
+            background: linear-gradient(135deg, var(--cafe-oscuro) 0%, #5a382c 100%) !important;
+            box-shadow: 0 4px 20px rgba(74, 44, 42, 0.3);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            color: var(--oro);
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .user-info {
+            color: white;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .user-info i {
+            color: var(--oro);
+        }
+
+        .btn-outline-light {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Contenido Principal */
+        .container {
+            max-width: 900px;
+        }
+
+        .page-title {
+            text-align: center;
+            color: var(--cafe-oscuro);
+            font-weight: 300;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--oro), transparent);
+        }
+
+        /* Cards Mejoradas */
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--cafe-oscuro), var(--cafe-medio));
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            font-weight: 600;
+            padding: 1.5rem 2rem;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header i {
+            color: var(--oro);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Items del Carrito */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background: rgba(212, 184, 150, 0.05);
+            transform: translateX(5px);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-right: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: var(--cafe-oscuro);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .cart-item-details {
+            color: var(--cafe-medio);
+            font-size: 0.9rem;
+        }
+
+        .cart-item-price {
+            text-align: right;
+        }
+
+        .item-total {
+            font-weight: 700;
+            color: var(--cafe-oscuro);
+            font-size: 1.2rem;
+        }
+
+        .item-unit {
+            color: var(--cafe-medio);
+            font-size: 0.9rem;
+        }
+
+        /* Total del Pedido */
+        .order-total {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--oro);
+        }
+
+        .total-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cafe-oscuro);
+            text-align: right;
+        }
+
+        /* Formulario de Pago */
+        .form-label {
+            font-weight: 600;
+            color: var(--cafe-oscuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            padding: 1rem;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .form-control:focus {
+            border-color: var(--oro);
+            box-shadow: 0 4px 12px rgba(201, 169, 110, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Botones de Acción */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--verde), #2ecc71);
+            border: none;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-weight: 600;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #868e96);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        /* Animaciones */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .card:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .card:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+
+        /* Estados Vacíos */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--cafe-medio);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--cafe-claro);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .cart-item img {
+                margin-right: 0;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-success, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Mejorada -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-mug-hot"></i>Kafeehaus
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="user-info">
+                    <i class="fas fa-user"></i>
+                    <span id="userName">Usuario</span>
+                </div>
+                <a class="nav-link" href="/menu">
+                    <i class="fas fa-utensils"></i>Menú
+                </a>
+                <a class="nav-link" href="/carrito">
+                    <i class="fas fa-shopping-cart"></i>Carrito
+                </a>
+                <button class="btn btn-outline-light ms-2" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-credit-card"></i> Finalizar Compra
+        </h1>
+
+        <!-- Resumen del Pedido -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-receipt"></i>
+                <h5 class="mb-0">Resumen de tu Pedido</h5>
+            </div>
+            <div class="card-body">
+                <div id="resumenPedido">
+                    <!-- Los items del carrito se cargarán aquí -->
+                </div>
+                <div class="order-total">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong class="fs-5">Total del Pedido:</strong>
+                        <div class="total-amount" id="totalPedido">$0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Pago -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-credit-card"></i>
+                <h5 class="mb-0">Información de Pago</h5>
+            </div>
+            <div class="card-body">
+                <form id="formPago">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-user me-2"></i>Nombre en la Tarjeta
+                            </label>
+                            <input type="text" class="form-control" id="nombreTarjeta" required placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-credit-card me-2"></i>Número de Tarjeta
+                            </label>
+                            <input type="text" class="form-control" id="numeroTarjeta" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-calendar me-2"></i>Fecha de Expiración
+                            </label>
+                            <input type="text" class="form-control" id="fechaExpiracion" placeholder="MM/AA" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-lock me-2"></i>CVV
+                            </label>
+                            <input type="text" class="form-control" id="cvv" placeholder="123" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-map-marker-alt me-2"></i>Dirección de Entrega
+                            </label>
+                            <input type="text" class="form-control" id="direccion" required placeholder="Tu dirección completa">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-sticky-note me-2"></i>Notas Especiales (opcional)
+                        </label>
+                        <textarea class="form-control" id="notas" rows="3" placeholder="Instrucciones especiales para la entrega, alergias, preferencias..."></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="action-buttons">
+            <button class="btn btn-success" onclick="confirmarPago()">
+                <i class="fas fa-check-circle"></i>
+                Confirmar Pago - <span id="totalBoton">$0</span>
+            </button>
+            <button class="btn btn-secondary" onclick="volverAlCarrito()">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Carrito
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let cart = [];
+        let userData = null;
+
+        // Verificación MEJORADA de autenticación
+        function verificarAutenticacion() {
+            try {
+                const userDataStr = localStorage.getItem('userData');
+                console.log('🔍 Verificando autenticación en pago...', userDataStr);
+                
+                if (!userDataStr) {
+                    console.log('❌ No hay userData en localStorage');
+                    alert('Debes iniciar sesión para realizar un pedido');
+                    window.location.href = '/iniciarsesion';
+                    return null;
+                }
+                
+                const userData = JSON.parse(userDataStr);
+                console.log('👤 Datos de usuario en pago:', userData);
+                
+                // Verificar que tenga los campos esenciales
+                if (!userData.email || !userData.rol || !userData.nombre) {
+                    console.log('❌ Datos de usuario incompletos');
+                    localStorage.removeItem('userData');
+                    alert('Sesión inválida. Por favor inicia sesión nuevamente.');
+                    window.location.href = '/iniciarsesion';
+                    return null;
+                }
+                
+                document.getElementById('userName').textContent = userData.nombre;
+                return userData;
+                
+            } catch (error) {
+                console.error('❌ Error verificando autenticación:', error);
+                localStorage.removeItem('userData');
+                alert('Error de sesión. Por favor inicia sesión nuevamente.');
+                window.location.href = '/iniciarsesion';
+                return null;
+            }
+        }
+
+        // Cargar carrito desde localStorage
+        function cargarCarrito() {
+            cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            if (cart.length === 0) {
+                document.getElementById('resumenPedido').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h4>Tu carrito está vacío</h4>
+                        <p>Agrega algunos productos deliciosos antes de pagar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            mostrarResumenPedido();
+        }
+
+        // Mostrar resumen del pedido
+        function mostrarResumenPedido() {
+            const resumenContainer = document.getElementById('resumenPedido');
+            let total = 0;
+            
+            resumenContainer.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemTotal = parseFloat(item.price.replace('$', '').replace('.', '')) * item.quantity;
+                total += itemTotal;
+                
+                const itemHTML = `
+                    <div class="cart-item">
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-details">Cantidad: ${item.quantity} unidad${item.quantity > 1 ? 'es' : ''}</div>
+                        </div>
+                        <div class="cart-item-price">
+                            <div class="item-total">$${itemTotal.toLocaleString()}</div>
+                            <div class="item-unit">${item.price} c/u</div>
+                        </div>
+                    </div>
+                `;
+                resumenContainer.innerHTML += itemHTML;
+            });
+            
+            document.getElementById('totalPedido').textContent = `$${total.toLocaleString()}`;
+            document.getElementById('totalBoton').textContent = `$${total.toLocaleString()}`;
+        }
+
+        // Confirmar pago - VERSIÓN CORREGIDA
+        async function confirmarPago() {
+            console.log('🔄 Iniciando proceso de pago...');
+            
+            // Verificar autenticación y obtener userData
+            const userData = verificarAutenticacion();
+            if (!userData) {
+                console.log('❌ Autenticación falló en confirmarPago');
+                return;
+            }
+            
+            console.log('✅ Usuario autenticado para pago:', userData.email);
+
+            // Validar formulario
+            const form = document.getElementById('formPago');
+            if (!form.checkValidity()) {
+                alert('Por favor completa todos los campos requeridos');
+                return;
+            }
+
+            // Preparar datos del pedido
+            const items = cart.map(item => ({
+                producto_id: 'temp_id',
+                nombre: item.name,
+                precio: parseFloat(item.price.replace('$', '').replace('.', '')),
+                cantidad: item.quantity,
+                imagen_url: item.img
+            }));
+
+            const total = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+
+            const pedidoData = {
+                usuario_email: userData.email, // ✅ Usamos el email verificado
+                items: items,
+                total: total,
+                direccion_entrega: document.getElementById('direccion').value,
+                notas: document.getElementById('notas').value || ''
+            };
+
+            console.log('📦 Enviando pedido a la API:', pedidoData);
+
+            try {
+                const response = await fetch('/api/pedidos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(pedidoData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    // Limpiar carrito
+                    localStorage.removeItem('cart');
+                    
+                    // Mostrar confirmación
+                    mostrarToastExito(`¡Pedido confirmado! ID: ${result.id_pedido}\nTotal: $${result.total.toLocaleString()}`);
+                    
+                    // Redirigir al menú después de un delay
+                    setTimeout(() => {
+                        window.location.href = '/menu';
+                    }, 3000);
+                    
+                } else {
+                    const errorData = await response.json();
+                    mostrarToastError(`Error al procesar el pedido: ${errorData.detail || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarToastError('Error de conexión al procesar el pago');
+            }
+        }
+
+        // Mostrar toast de éxito
+        function mostrarToastExito(mensaje) {
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed top-0 start-50 translate-middle-x p-3';
+            toast.style.zIndex = '9999';
+            toast.innerHTML = `
+                <div class="toast show" role="alert" style="background: linear-gradient(135deg, var(--verde), #2ecc71); color: white;">
+                    <div class="toast-header" style="background: transparent; color: white; border: none;">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong class="me-auto">¡Éxito!</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body" style="background: transparent;">
+                        ${mensaje}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        // Mostrar toast de error
+        function mostrarToastError(mensaje) {
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed top-0 start-50 translate-middle-x p-3';
+            toast.style.zIndex = '9999';
+            toast.innerHTML = `
+                <div class="toast show" role="alert" style="background: linear-gradient(135deg, var(--rojo), #e74c3c); color: white;">
+                    <div class="toast-header" style="background: transparent; color: white; border: none;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong class="me-auto">Error</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body" style="background: transparent;">
+                        ${mensaje}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+
+        // Volver al carrito
+        function volverAlCarrito() {
+            window.location.href = '/carrito';
+        }
+
+        // Cerrar sesión
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                console.log('🚪 Cerrando sesión...');
+                localStorage.removeItem('userData');
+                localStorage.removeItem('cart');
+                setTimeout(() => {
+                    window.location.href = '/iniciarsesion';
+                }, 100);
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando Pago...');
+            
+            // Verificar autenticación primero
+            const userData = verificarAutenticacion();
+            if (userData) {
+                console.log('✅ Usuario autenticado, cargando carrito...');
+                cargarCarrito();
+            }
+        });
+    </script>
+</body>
+</html>
